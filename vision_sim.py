@@ -48,4 +48,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
     boxes_1=partition(args.box1)
     boxes_2=partition(args.box2)
-    print(get_similarity(args.img1, args.img2, boxes_1, boxes_2))
+    print get_similarity(args.img1, args.img2, boxes_1, boxes_2)
