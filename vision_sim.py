@@ -1,15 +1,11 @@
-
 import numpy as np
 from keras.applications.resnet50 import preprocess_input
 from keras.models import Model, load_model
 from keras.preprocessing import image
 import argparse
-import requests
-from io import BytesIO
 
 def extract_feature(img_path, boxes, net):
-#    img = image.load_img(img_path, target_size=(224, 224))
-    img = image.load_img(BytesIO(requests.get(img_path).content))
+    img = image.load_img(img_path)
     feature = []
     for box in boxes:
         box[2] = box[0] + box[2]
@@ -24,8 +20,8 @@ def extract_feature(img_path, boxes, net):
     return feature
 
 def get_similarity(img_path1, img_path2, boxes_1, boxes_2):
-    net = load_model('market_pair_pretrain.h5')
-    net = Model(inputs=[net.input], outputs=[net.get_layer('avg_pool').output])
+    net = load_model('market_pair_pretrain.h5').layers[2]
+    net = Model(inputs=[net.get_input_at(0)], outputs=[net.get_layer('avg_pool').get_output_at(0)])
     feature_1 = extract_feature(img_path1, boxes_1, net)
     feature_2 = extract_feature(img_path2, boxes_2, net)
     sim = [[0 for j in range(len(boxes_2))] for i in range(len(boxes_1))]
@@ -43,7 +39,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='compute similarity of two images, example:\n python vision_sim.py --img1 /home/cwh/0.jpg --box1 382 193 73 126 --img2 /home/cwh/2.jpg --box2 370 196 92 125')
     parser.add_argument('--img1', help='path of image1')
     parser.add_argument('--img2', help='path of image2')
-    parser.add_argument("--box1", nargs='*', type=int)  
+    parser.add_argument("--box1", nargs='*', type=int)
     parser.add_argument("--box2", nargs='*', type=int)
     args = parser.parse_args()
     boxes_1=partition(args.box1)
