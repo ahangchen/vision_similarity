@@ -24,7 +24,7 @@ def extract_feature(img_path, boxes, net):
     return feature
 
 def get_similarity(img_path1, img_path2, boxes_1, boxes_2):
-    net = load_model('D:\Mendru\python code\simple_simlaries\market_pair_pretrain.h5')
+    net = load_model('market_pair_pretrain.h5')
     net = Model(inputs=[net.input], outputs=[net.get_layer('avg_pool').output])
     feature_1 = extract_feature(img_path1, boxes_1, net)
     feature_2 = extract_feature(img_path2, boxes_2, net)
