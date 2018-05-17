@@ -3,12 +3,9 @@ from keras.applications.resnet50 import preprocess_input
 from keras.models import Model, load_model
 from keras.preprocessing import image
 import argparse
-import requests
-from io import BytesIO
 
 def extract_feature(img_path, boxes, net):
-#    img = image.load_img(img_path, target_size=(224, 224))
-    img = image.load_img(BytesIO(requests.get(img_path).content))
+    img = image.load_img(img_path)
     feature = []
     for box in boxes:
         box[2] = box[0] + box[2]
